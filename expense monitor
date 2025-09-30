@@ -1,0 +1,50 @@
+import sys
+import json
+from pathlib import Path
+
+DATA_FILE = Path("data.json")
+
+def load_data():
+    if DATA_FILE.exists():
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
+    return []
+
+def save_data(expenses):
+    with open(DATA_FILE, "w") as f:
+        json.dump(expenses, f, indent=2)
+
+def add_expense(name, amount):
+    expenses = load_data()
+    expenses.append({"name": name, "amount": float(amount)})
+    save_data(expenses)
+    print(f"✅ Added: {name} - ${amount}")
+
+def list_expenses():
+    expenses = load_data()
+    if not expenses:
+        print("No expenses yet.")
+        return
+    for i, e in enumerate(expenses, start=1):
+        print(f"{i}. {e['name']} - ${e['amount']}")
+
+def total_expenses():
+    expenses = load_data()
+    total = sum(e["amount"] for e in expenses)
+    print(f"💰 Total spent: ${total}")
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python expense_monitor.py [add/list/total]")
+        sys.exit(1)
+
+    command = sys.argv[1].lower()
+
+    if command == "add" and len(sys.argv) == 4:
+        add_expense(sys.argv[2], sys.argv[3])
+    elif command == "list":
+        list_expenses()
+    elif command == "total":
+        total_expenses()
+    else:
+        print("Unknown command or missing arguments.")
