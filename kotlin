@@ -1,0 +1,5 @@
+expense-monitor/
+│── README.md
+│── requirements.txt
+│── expense_monitor.py
+│── data.json
